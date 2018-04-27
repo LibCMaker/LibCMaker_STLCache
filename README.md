@@ -1,3 +1,1 @@
-# LibCMaker_STLCache
-
-LibCMaker_STLCache desc TODO.
+LibCMaker_STLCache is a CMake build scripts for build STL::Cache library with CMake.
