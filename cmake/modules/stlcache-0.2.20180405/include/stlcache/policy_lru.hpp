@@ -19,8 +19,8 @@ namespace stlcache {
         list<Key,Allocator<Key> > _entries;
         typedef typename list<Key,Allocator<Key> >::iterator entriesIterator;
 
-        map<Key,entriesIterator,less<Key>,Allocator<pair<Key,entriesIterator> > > _entriesMap;
-        typedef typename map<Key,entriesIterator,less<Key>,Allocator<pair<Key,entriesIterator> > >::iterator entriesMapIterator;
+        map<Key,entriesIterator,less<Key>,Allocator<pair<const Key,entriesIterator> > > _entriesMap;
+        typedef typename map<Key,entriesIterator,less<Key>,Allocator<pair<const Key,entriesIterator> > >::iterator entriesMapIterator;
     public:
         _policy_lru_type<Key,Allocator>& operator= ( const _policy_lru_type<Key,Allocator>& x) {
             this->_entries=x._entries;

@@ -13,6 +13,7 @@
 #endif /* _MSC_VER */
 
 #include <map>
+#include <typeinfo>
 
 using namespace std;
 
