@@ -57,6 +57,7 @@ function(lib_cmaker_stlcache)
   cmake_minimum_required(VERSION ${cmr_CMAKE_MIN_VER})
 ## --- Common part of the lib_cmaker_<lib_name> function ---
 
+
   #-----------------------------------------------------------------------
   # Library specific build arguments
   #-----------------------------------------------------------------------
