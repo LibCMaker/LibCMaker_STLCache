@@ -21,24 +21,29 @@
 #    along with this program. If not, see <http://www.gnu.org/licenses/>.
 # ****************************************************************************
 
-cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.2)
 
 project(LibCMaker_STLCache_Compile_Test CXX)
 
-list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+set(CMAKE_VERBOSE_MAKEFILE ON)
+set(cmr_PRINT_DEBUG ON)
 
 
 #-----------------------------------------------------------------------
-# Configure for find_package.
+# Configure to find_package()
 #-----------------------------------------------------------------------
 
-# Set CMake's search path for find_package(), find_program(), find_library(),
-# find_file(), and find_path() commands.
+# Set CMake's search path for find_*() commands.
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_INSTALL_PREFIX}")
 
 if(ANDROID)
   list(APPEND CMAKE_FIND_ROOT_PATH "${CMAKE_INSTALL_PREFIX}")
 endif()
+
+# To use our FindSTLCache.cmake.
+list(APPEND CMAKE_MODULE_PATH
+  "${PROJECT_SOURCE_DIR}/cmake/LibCMaker_STLCache/cmake"
+)
 
 
 #-----------------------------------------------------------------------
@@ -51,59 +56,45 @@ set(LIBCMAKER_SRC_DIR "${PROJECT_SOURCE_DIR}/cmake/LibCMaker")
 
 
 #-----------------------------------------------------------------------
-# Set vars for LibCMaker_STLCache.
+# Set vars for LibCMaker_STLCache
 #-----------------------------------------------------------------------
 
 # Standard CMake vars.
 #set(BUILD_SHARED_LIBS ON)
 
-#set(SKIP_INSTALL_HEADERS ON)
-#set(SKIP_INSTALL_LIBRARIES ON)
-#set(SKIP_INSTALL_ALL ON)
-
-# Set useful vars for lib_cmaker_stlcache().
-set(cmr_PRINT_DEBUG ON)
-
-set(STLCACHE_lib_VERSION "0.2.20180405")
-
+# Vars to lib_cmaker_stlcache().
+set(STLCACHE_lib_VERSION  "0.2.20180405")
 set(STLCACHE_DOWNLOAD_DIR "${PROJECT_BINARY_DIR}")
-set(STLCACHE_UNPACKED_SRC_DIR "${PROJECT_BINARY_DIR}")
-set(STLCACHE_BUILD_DIR "${PROJECT_BINARY_DIR}/build_stlcache")
+set(STLCACHE_UNPACKED_DIR "${PROJECT_BINARY_DIR}")
+set(STLCACHE_BUILD_DIR    "${PROJECT_BINARY_DIR}/build_stlcache")
 
 set(COPY_STLCACHE_CMAKE_BUILD_SCRIPTS ON)
 
-# Library specific vars and options.
 set(STLCACHE_DIR "${CMAKE_INSTALL_PREFIX}")
 set(ENV{STLCACHE_DIR} "${STLCACHE_DIR}")
 
+# Library specific vars.
+
 
 #-----------------------------------------------------------------------
-# Build and install the STLCache.
+# Build and install the STLCache
 #-----------------------------------------------------------------------
 
 include(
   ${PROJECT_SOURCE_DIR}/cmake/LibCMaker_STLCache/lib_cmaker_stlcache.cmake)
 
-# Make compile, build and install the library at a config CMake phase,
-# generate the CMake config files.
-
-# Install specified library version.
+# Make compile, build and install the library at a config CMake phase.
 lib_cmaker_stlcache(
   VERSION           ${STLCACHE_lib_VERSION}
   DOWNLOAD_DIR      ${STLCACHE_DOWNLOAD_DIR}
-  UNPACKED_SRC_DIR  ${STLCACHE_UNPACKED_SRC_DIR}
+  UNPACKED_DIR  ${STLCACHE_UNPACKED_DIR}
   BUILD_DIR         ${STLCACHE_BUILD_DIR}
 )
 
 
 #-----------------------------------------------------------------------
-# find_package
+# find_package()
 #-----------------------------------------------------------------------
-
-set(LIBCMAKER_STLCACHE_SRC_DIR
-  "${PROJECT_SOURCE_DIR}/cmake/LibCMaker_STLCache")
-# To use our FindSTLCache.cmake
-list(APPEND CMAKE_MODULE_PATH "${LIBCMAKER_STLCACHE_SRC_DIR}/cmake")
 
 # Use newly got library.
 find_package(STLCache REQUIRED)
@@ -113,7 +104,8 @@ find_package(STLCache REQUIRED)
 # Link to the library.
 #-----------------------------------------------------------------------
 
-# Build lib for testing.
+# Build test executables.
+
 add_executable(${PROJECT_NAME}
   ${PROJECT_SOURCE_DIR}/example.cpp
 )

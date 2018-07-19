@@ -21,34 +21,18 @@
 #    along with this program. If not, see <http://www.gnu.org/licenses/>.
 # ****************************************************************************
 
-include(cmr_get_version_parts)
-include(cmr_print_fatal_error)
+# Part of "LibCMaker/cmake/modules/cmr_build_rules.cmake".
 
-function(cmr_stlcache_get_download_params
-    version
-    out_url out_sha out_src_dir_name out_tar_file_name)
-
-  # https://codeload.github.com/akashihi/stlcache/legacy.tar.gz/master
-  # https://github.com/akashihi/stlcache/archive/master.zip
-  set(lib_base_url "https://github.com/akashihi/stlcache/archive")
-
-  if(version VERSION_EQUAL "0.2.20180405")
-    set(lib_sha
-      "cbd12bdde57b22fd3f976c4faf30b9c2150acd0096e079c0030eb92bf2650874")
-    set(lib_commit
-      "b41f7a88e1aeb22b40d2472dfa84f3249076907b")
+  # Copy CMake build scripts.
+  if(COPY_STLCACHE_CMAKE_BUILD_SCRIPTS)
+    cmr_print_message(
+      "Copy CMake build scripts to unpacked sources.")
+    execute_process(
+      COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${lib_BASE_DIR}/cmake/modules/stlcache-${lib_VERSION}
+        ${lib_SRC_DIR}/
+    )
   endif()
 
-  if(NOT DEFINED lib_sha)
-    cmr_print_fatal_error("Library version ${version} is not supported.")
-  endif()
-
-  set(lib_src_name "stlcache-${lib_commit}")
-  set(lib_tar_file_name "${lib_src_name}.tar.gz")
-  set(lib_url "${lib_base_url}/${lib_commit}.tar.gz")
-
-  set(${out_url} "${lib_url}" PARENT_SCOPE)
-  set(${out_sha} "${lib_sha}" PARENT_SCOPE)
-  set(${out_src_dir_name} "${lib_src_name}" PARENT_SCOPE)
-  set(${out_tar_file_name} "${lib_tar_file_name}" PARENT_SCOPE)
-endfunction()
+  # Configure library.
+  add_subdirectory(${lib_SRC_DIR} ${lib_VERSION_BUILD_DIR})

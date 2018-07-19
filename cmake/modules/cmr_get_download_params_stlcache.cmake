@@ -21,18 +21,28 @@
 #    along with this program. If not, see <http://www.gnu.org/licenses/>.
 # ****************************************************************************
 
-# Can be used as separate project for library building with standard CMake way.
+# Part of "LibCMaker/cmake/modules/cmr_get_download_params.cmake".
 
-cmake_minimum_required(VERSION 3.2)
-project(LibCMaker_STLCache)
+  if(version VERSION_EQUAL "0.2.20180405")
+    set(arch_file_sha
+      "cbd12bdde57b22fd3f976c4faf30b9c2150acd0096e079c0030eb92bf2650874")
+    set(src_commit
+      "b41f7a88e1aeb22b40d2472dfa84f3249076907b")
+  endif()
 
-if(NOT LIBCMAKER_SRC_DIR)
-  message(FATAL_ERROR
-    "Please set LIBCMAKER_SRC_DIR with path to LibCMaker project root")
-endif()
-list(APPEND CMAKE_MODULE_PATH "${LIBCMAKER_SRC_DIR}/cmake/modules")
+  # https://codeload.github.com/akashihi/stlcache/legacy.tar.gz/master
+  # https://github.com/akashihi/stlcache/archive/master.zip
+  set(base_url "https://github.com/akashihi/stlcache/archive")
+  set(src_dir_name    "stlcache-${version}")
+  set(arch_file_name  "${src_dir_name}.tar.gz")
+  set(unpack_to_dir   "${unpacked_dir}/${src_dir_name}")
 
-list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/modules")
-
-include(cmr_stlcache_cmaker)
-cmr_stlcache_cmaker()
+  set(${out_ARCH_SRC_URL}   "${base_url}/${src_commit}.tar.gz" PARENT_SCOPE)
+  set(${out_ARCH_DST_FILE}  "${download_dir}/${arch_file_name}" PARENT_SCOPE)
+  set(${out_ARCH_FILE_SHA}  "${arch_file_sha}" PARENT_SCOPE)
+  set(${out_SHA_ALG}        "SHA256" PARENT_SCOPE)
+  set(${out_UNPACK_TO_DIR}  "${unpack_to_dir}" PARENT_SCOPE)
+  set(${out_UNPACKED_SOURCES_DIR}
+    "${unpack_to_dir}/stlcache-${src_commit}" PARENT_SCOPE
+  )
+  set(${out_VERSION_BUILD_DIR} "${build_dir}/${src_dir_name}" PARENT_SCOPE)
