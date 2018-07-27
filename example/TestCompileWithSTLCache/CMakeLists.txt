@@ -85,10 +85,10 @@ include(
 
 # Make compile, build and install the library at a config CMake phase.
 lib_cmaker_stlcache(
-  VERSION           ${STLCACHE_lib_VERSION}
-  DOWNLOAD_DIR      ${STLCACHE_DOWNLOAD_DIR}
+  VERSION       ${STLCACHE_lib_VERSION}
+  DOWNLOAD_DIR  ${STLCACHE_DOWNLOAD_DIR}
   UNPACKED_DIR  ${STLCACHE_UNPACKED_DIR}
-  BUILD_DIR         ${STLCACHE_BUILD_DIR}
+  BUILD_DIR     ${STLCACHE_BUILD_DIR}
 )
 
 
