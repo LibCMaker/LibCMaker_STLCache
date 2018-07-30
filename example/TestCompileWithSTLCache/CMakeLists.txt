@@ -21,7 +21,7 @@
 #    along with this program. If not, see <http://www.gnu.org/licenses/>.
 # ****************************************************************************
 
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.3)
 
 project(LibCMaker_STLCache_Compile_Test CXX)
 
@@ -56,7 +56,7 @@ set(LIBCMAKER_SRC_DIR "${PROJECT_SOURCE_DIR}/cmake/LibCMaker")
 
 
 #-----------------------------------------------------------------------
-# Set vars for LibCMaker_STLCache
+# Set vars to LibCMaker_STLCache
 #-----------------------------------------------------------------------
 
 # Standard CMake vars.
@@ -69,9 +69,6 @@ set(STLCACHE_UNPACKED_DIR "${PROJECT_BINARY_DIR}")
 set(STLCACHE_BUILD_DIR    "${PROJECT_BINARY_DIR}/build_stlcache")
 
 set(COPY_STLCACHE_CMAKE_BUILD_SCRIPTS ON)
-
-set(STLCACHE_DIR "${CMAKE_INSTALL_PREFIX}")
-set(ENV{STLCACHE_DIR} "${STLCACHE_DIR}")
 
 # Library specific vars.
 
