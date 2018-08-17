@@ -21,7 +21,7 @@
 #    along with this program. If not, see <http://www.gnu.org/licenses/>.
 # ****************************************************************************
 
-# Part of "LibCMaker/cmake/modules/cmr_build_rules.cmake".
+# Part of "LibCMaker/cmake/cmr_build_rules.cmake".
 
   # Copy CMake build scripts.
   if(COPY_STLCACHE_CMAKE_BUILD_SCRIPTS)
@@ -29,7 +29,7 @@
       "Copy CMake build scripts to unpacked sources.")
     execute_process(
       COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${lib_BASE_DIR}/cmake/modules/stlcache-${lib_VERSION}
+        ${lib_BASE_DIR}/patch/stlcache-${lib_VERSION}
         ${lib_SRC_DIR}/
     )
   endif()

@@ -40,71 +40,60 @@ if(ANDROID)
   list(APPEND CMAKE_FIND_ROOT_PATH "${CMAKE_INSTALL_PREFIX}")
 endif()
 
-# To use our FindSTLCache.cmake.
-list(APPEND CMAKE_MODULE_PATH
-  "${PROJECT_SOURCE_DIR}/cmake/LibCMaker_STLCache/cmake"
-)
-
 
 #-----------------------------------------------------------------------
 # Set path to LibCMaker root
 #-----------------------------------------------------------------------
 
-set(LIBCMAKER_SRC_DIR "${PROJECT_SOURCE_DIR}/cmake/LibCMaker")
+set(LibCMaker_DIR "${CMAKE_CURRENT_LIST_DIR}/cmake/LibCMaker")
 # Uncomment it if need functions from LibCMaker
-#list(APPEND CMAKE_MODULE_PATH "${LIBCMAKER_SRC_DIR}/cmake/modules")
+#list(APPEND CMAKE_MODULE_PATH "${LibCMaker_DIR}/cmake")
 
 
 #-----------------------------------------------------------------------
 # Set vars to LibCMaker_STLCache
 #-----------------------------------------------------------------------
 
-# Standard CMake vars.
-#set(BUILD_SHARED_LIBS ON)
-
-# Vars to lib_cmaker_stlcache().
+set(STLCACHE_lib_NAME     "STLCache")
 set(STLCACHE_lib_VERSION  "0.2.20180405")
-set(STLCACHE_DOWNLOAD_DIR "${PROJECT_BINARY_DIR}")
-set(STLCACHE_UNPACKED_DIR "${PROJECT_BINARY_DIR}")
-set(STLCACHE_BUILD_DIR    "${PROJECT_BINARY_DIR}/build_stlcache")
+set(STLCACHE_lib_DIR      "${CMAKE_CURRENT_LIST_DIR}/cmake/LibCMaker_STLCache")
+
+# To use below for sample sources.
+set(cmr_UNPACKED_DIR ${CMAKE_CURRENT_BINARY_DIR}/download/unpacked)
+
+# To use our FindSTLCache.cmake.
+list(APPEND CMAKE_MODULE_PATH "${STLCACHE_lib_DIR}/cmake/modules")
 
 set(COPY_STLCACHE_CMAKE_BUILD_SCRIPTS ON)
 
-# Library specific vars.
+
+#-----------------------------------------------------------------------
+# Library specific vars and options
+#-----------------------------------------------------------------------
 
 
 #-----------------------------------------------------------------------
-# Build and install the STLCache
+# Build, install and find the STLCache
 #-----------------------------------------------------------------------
 
-include(
-  ${PROJECT_SOURCE_DIR}/cmake/LibCMaker_STLCache/lib_cmaker_stlcache.cmake)
-
-# Make compile, build and install the library at a config CMake phase.
-lib_cmaker_stlcache(
-  VERSION       ${STLCACHE_lib_VERSION}
-  DOWNLOAD_DIR  ${STLCACHE_DOWNLOAD_DIR}
-  UNPACKED_DIR  ${STLCACHE_UNPACKED_DIR}
-  BUILD_DIR     ${STLCACHE_BUILD_DIR}
+# Make build and install the library at a config CMake phase.
+include(${LibCMaker_DIR}/cmake/cmr_find_package.cmake)
+cmr_find_package(
+  LibCMaker_DIR   ${LibCMaker_DIR}
+  NAME            ${STLCACHE_lib_NAME}
+  VERSION         ${STLCACHE_lib_VERSION}
+  LIB_DIR         ${STLCACHE_lib_DIR}
+  REQUIRED
 )
 
 
 #-----------------------------------------------------------------------
-# find_package()
-#-----------------------------------------------------------------------
-
-# Use newly got library.
-find_package(STLCache REQUIRED)
-
-
-#-----------------------------------------------------------------------
-# Link to the library.
+# Link to the library
 #-----------------------------------------------------------------------
 
 # Build test executables.
-
 add_executable(${PROJECT_NAME}
-  ${PROJECT_SOURCE_DIR}/example.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/example.cpp
 )
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 
