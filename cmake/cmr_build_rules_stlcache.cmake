@@ -25,8 +25,7 @@
 
   # Copy CMake build scripts.
   if(COPY_STLCACHE_CMAKE_BUILD_SCRIPTS)
-    cmr_print_status(
-      "Copy CMake build scripts to unpacked sources.")
+    cmr_print_status("Copy CMake build scripts to unpacked sources.")
     execute_process(
       COMMAND ${CMAKE_COMMAND} -E copy_directory
         ${lib_BASE_DIR}/patch/stlcache-${lib_VERSION}
