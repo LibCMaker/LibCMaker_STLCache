@@ -1,6 +1,6 @@
 # ****************************************************************************
 #  Project:  LibCMaker_STLCache
-#  Purpose:  A CMake build script for STLCache library
+#  Purpose:  A CMake build scripts for build libraries with CMake
 #  Author:   NikitaFeodonit, nfeodonit@yandex.com
 # ****************************************************************************
 #    Copyright (c) 2017-2019 NikitaFeodonit
@@ -21,80 +21,42 @@
 #    along with this program. If not, see <http://www.gnu.org/licenses/>.
 # ****************************************************************************
 
-cmake_minimum_required(VERSION 3.4)
+#-----------------------------------------------------------------------
+# The file is an example of the convenient script for the library build.
+#-----------------------------------------------------------------------
 
-project(LibCMaker_STLCache_Compile_Test CXX)
+#-----------------------------------------------------------------------
+# Lib's name, version, paths
+#-----------------------------------------------------------------------
 
-option(CMAKE_VERBOSE_MAKEFILE "CMAKE_VERBOSE_MAKEFILE" OFF)
-option(cmr_PRINT_DEBUG "cmr_PRINT_DEBUG" OFF)
+set(STLCACHE_lib_NAME      "STLCache")
+set(STLCACHE_lib_VERSION   "0.2.20180405")
+set(STLCACHE_lib_DIR       "${CMAKE_CURRENT_LIST_DIR}")
+
+# To use our Find<LibName>.cmake.
+list(APPEND CMAKE_MODULE_PATH "${STLCACHE_lib_DIR}/cmake/modules")
 
 
 #-----------------------------------------------------------------------
-# Configure to find_package()
+# LibCMaker_<LibName> specific vars and options
 #-----------------------------------------------------------------------
 
-# Set CMake's search path for find_*() commands.
-list(APPEND CMAKE_PREFIX_PATH "${CMAKE_INSTALL_PREFIX}")
-
-if(ANDROID)
-  list(APPEND CMAKE_FIND_ROOT_PATH "${CMAKE_INSTALL_PREFIX}")
-endif()
+set(COPY_STLCACHE_CMAKE_BUILD_SCRIPTS ON)
 
 
 #-----------------------------------------------------------------------
-# Set path vars
+# Library specific vars and options
 #-----------------------------------------------------------------------
-
-set(libs_DIR "${CMAKE_CURRENT_LIST_DIR}/libs")
-# To use below for sample sources.
-set(cmr_UNPACKED_DIR ${CMAKE_CURRENT_BINARY_DIR}/download/unpacked)
 
 
 #-----------------------------------------------------------------------
-# LibCMaker settings
+# Build, install and find the library
 #-----------------------------------------------------------------------
 
-set(LibCMaker_DIR "${libs_DIR}/LibCMaker")
-list(APPEND CMAKE_MODULE_PATH "${LibCMaker_DIR}/cmake")
-include(cmr_find_package)
-
-
-#-----------------------------------------------------------------------
-# Download, configure, build, install and find the required libraries
-#-----------------------------------------------------------------------
-
-option(BUILD_TESTING "Build the testing tree." OFF)
-if(BUILD_TESTING)
-  enable_testing()
-  include(${libs_DIR}/LibCMaker_GoogleTest/cmr_build_googletest.cmake)
-endif()
-
-include(${libs_DIR}/LibCMaker_STLCache/cmr_build_stlcache.cmake)
-
-
-#-----------------------------------------------------------------------
-# Build the executable of the example
-#-----------------------------------------------------------------------
-
-set(example_src_DIR "${CMAKE_CURRENT_LIST_DIR}/src")
-
-add_executable(${PROJECT_NAME}
-  ${example_src_DIR}/example.cpp
+cmr_find_package(
+  LibCMaker_DIR   ${LibCMaker_DIR}
+  NAME            ${STLCACHE_lib_NAME}
+  VERSION         ${STLCACHE_lib_VERSION}
+  LIB_DIR         ${STLCACHE_lib_DIR}
+  REQUIRED
 )
-set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
-
-
-#-----------------------------------------------------------------------
-# Link to the libraries
-#-----------------------------------------------------------------------
-
-# STLCache
-target_include_directories(${PROJECT_NAME} PRIVATE ${STLCACHE_INCLUDE_DIR})
-
-
-#-----------------------------------------------------------------------
-# Testing
-#-----------------------------------------------------------------------
-
-set(test_src_DIR "${CMAKE_CURRENT_LIST_DIR}/src")
-add_subdirectory(test)
