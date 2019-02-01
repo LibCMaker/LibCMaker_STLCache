@@ -24,7 +24,8 @@ language: cpp
 
 env:
   global:
-    - cmr_BUILD_DIR=${TRAVIS_BUILD_DIR}/build
+    - cmr_SAMPLE_DIR=${TRAVIS_BUILD_DIR}/samples/TestCompileWithSTLCache
+    - cmr_BUILD_DIR=${cmr_SAMPLE_DIR}/build
     - cmr_INSTALL_DIR=${cmr_BUILD_DIR}/install
     - cmr_DOWNLOAD_DIR=${cmr_BUILD_DIR}/download
     - cmr_JOBS_CNT=4
@@ -35,21 +36,30 @@ env:
 build_linux: &build_linux
   os: linux
   dist: xenial
-  env:
+  env: &build_linux_env
     - cmr_TARGET_OS=linux
+
     - cmr_CMAKE_RELEASE=cmake-3.4.0-Linux-x86_64
     - cmr_CMAKE_DIR=${cmr_INSTALL_DIR}/${cmr_CMAKE_RELEASE}
     - cmr_CMAKE_CMD=${cmr_CMAKE_DIR}/bin/cmake
     - cmr_CTEST_CMD=${cmr_CMAKE_DIR}/bin/ctest
-    - cmr_RUN_TEST=1
+
     - cmr_JOBS="-j${cmr_JOBS_CNT}"
+
+    - cmr_RUN_TEST=1
+
   before_install:
+    - mkdir ${cmr_BUILD_DIR}
+    - mkdir ${cmr_INSTALL_DIR}
+    - mkdir ${cmr_DOWNLOAD_DIR}
     - wget -c -N -P ${cmr_DOWNLOAD_DIR} https://cmake.org/files/v3.4/${cmr_CMAKE_RELEASE}.tar.gz
     - tar -xvf ${cmr_DOWNLOAD_DIR}/${cmr_CMAKE_RELEASE}.tar.gz --directory ${cmr_INSTALL_DIR}
+
 
 build_linux_gcc: &build_linux_gcc
   <<: *build_linux
   compiler: gcc
+
 
 build_linux_clang: &build_linux_clang
   <<: *build_linux
@@ -94,52 +104,68 @@ matrix:
   include:
     - <<: *build_linux_gcc
       env:
+        - *build_linux_env
         - cmr_CMAKE_BUILD_TYPE=Debug
         - cmr_BUILD_SHARED_LIBS=ON
 
-    - <<: *build_linux_gcc
-      env:
-        - cmr_CMAKE_BUILD_TYPE=Debug
-        - cmr_BUILD_SHARED_LIBS=OFF
+#    - <<: *build_linux_gcc
+#      env:
+#        - *build_linux_env
+#        - cmr_CMAKE_BUILD_TYPE=Debug
+#        - cmr_BUILD_SHARED_LIBS=OFF
 
-    - <<: *build_linux_gcc
-      env:
-        - cmr_CMAKE_BUILD_TYPE=Release
-        - cmr_BUILD_SHARED_LIBS=ON
+#    - <<: *build_linux_gcc
+#      env:
+#        - *build_linux_env
+#        - cmr_CMAKE_BUILD_TYPE=Release
+#        - cmr_BUILD_SHARED_LIBS=ON
 
-    - <<: *build_linux_gcc
-      env:
-        - cmr_CMAKE_BUILD_TYPE=Release
-        - cmr_BUILD_SHARED_LIBS=OFF
-
+#    - <<: *build_linux_gcc
+#      env:
+#        - *build_linux_env
+#        - cmr_CMAKE_BUILD_TYPE=Release
+#        - cmr_BUILD_SHARED_LIBS=OFF
 
 
 # === Build script ===
 
 before_script:
-  - mkdir ${cmr_BUILD_DIR}
   - cd ${cmr_BUILD_DIR}
 
 script:
-#  - if [[ "$cmr_TARGET_OS" == "linux" ]]; then  cmake && ctest ; fi
-  - ${cmr_CMAKE_CMD} ../
-      -Dcmr_PRINT_DEBUG=ON
+  - if [[ "$cmr_TARGET_OS" == "linux" ]]; then
+      ${cmr_CMAKE_CMD} ../
+        -Dcmr_PRINT_DEBUG=ON
         -DCMAKE_VERBOSE_MAKEFILE=ON
         -DCMAKE_COLOR_MAKEFILE=ON
         -DBUILD_TESTING=ON
-      -DCMAKE_INSTALL_PREFIX=${cmr_INSTALL_DIR}
-        -DCMAKE_GENERATOR=${cmr_CMAKE_GENERATOR}
-        -DCMAKE_MAKE_PROGRAM=${cmr_CMAKE_MAKE_PROGRAM}
-        -DCMAKE_BUILD_TYPE=${cmr_CMAKE_BUILD_TYPE}
-        -DBUILD_SHARED_LIBS=${cmr_BUILD_SHARED_LIBS}
-      -DANDROID_NDK=${cmr_ANDROID_NDK}
-        -DCMAKE_TOOLCHAIN_FILE=${cmr_CMAKE_TOOLCHAIN_FILE}
-        -DANDROID_ABI=${cmr_ANDROID_ABI}
-        -DANDROID_NATIVE_API_LEVEL=${cmr_ANDROID_NATIVE_API_LEVEL}
-        -DANDROID_TOOLCHAIN=${cmr_ANDROID_TOOLCHAIN}
-        -DANDROID_STL=${cmr_ANDROID_STL}
-        -DANDROID_CPP_FEATURES=${ANDROID_CPP_FEATURES}
+        -DCMAKE_INSTALL_PREFIX=${cmr_INSTALL_DIR}
+          -DCMAKE_BUILD_TYPE=${cmr_CMAKE_BUILD_TYPE}
+          -DBUILD_SHARED_LIBS=${cmr_BUILD_SHARED_LIBS}
+    ; fi
+
+  - if [[ "$cmr_TARGET_OS" == "android" ]]; then
+      ${cmr_CMAKE_CMD} ../
+        -Dcmr_PRINT_DEBUG=ON
+        -DCMAKE_VERBOSE_MAKEFILE=ON
+        -DCMAKE_COLOR_MAKEFILE=ON
+        -DBUILD_TESTING=ON
+        -DCMAKE_INSTALL_PREFIX=${cmr_INSTALL_DIR}
+          -DCMAKE_BUILD_TYPE=${cmr_CMAKE_BUILD_TYPE}
+          -DBUILD_SHARED_LIBS=${cmr_BUILD_SHARED_LIBS}
+        -DANDROID_NDK=${cmr_ANDROID_NDK}
+          -DCMAKE_TOOLCHAIN_FILE=${cmr_CMAKE_TOOLCHAIN_FILE}
+          -DCMAKE_GENERATOR=${cmr_CMAKE_GENERATOR}
+          -DCMAKE_MAKE_PROGRAM=${cmr_CMAKE_MAKE_PROGRAM}
+          -DANDROID_ABI=${cmr_ANDROID_ABI}
+          -DANDROID_NATIVE_API_LEVEL=${cmr_ANDROID_NATIVE_API_LEVEL}
+          -DANDROID_TOOLCHAIN=${cmr_ANDROID_TOOLCHAIN}
+          -DANDROID_STL=${cmr_ANDROID_STL}
+          -DANDROID_CPP_FEATURES=${ANDROID_CPP_FEATURES}
+    ; fi
 
   - ${cmr_CMAKE_CMD} --build . -- ${cmr_JOBS}
 
-  - if [[ -n "$cmr_RUN_TEST" ]]; then  ${cmr_CTEST_CMD} --output-on-failure  ; fi
+  - if [[ -n "$cmr_RUN_TEST" ]]; then
+      ${cmr_CTEST_CMD} --output-on-failure
+    ; fi
