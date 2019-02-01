@@ -39,15 +39,14 @@ build_linux: &build_linux
   dist: xenial
   env: &build_linux_env
     - cmr_TARGET_OS=linux
+    - cmr_JOBS="-j${cmr_JOBS_CNT}"
+    - cmr_RUN_TEST=1
 
     - cmr_CMAKE_RELEASE=cmake-3.4.0-Linux-x86_64
     - cmr_CMAKE_DIR=${cmr_INSTALL_DIR}/${cmr_CMAKE_RELEASE}
     - cmr_CMAKE_CMD=${cmr_CMAKE_DIR}/bin/cmake
     - cmr_CTEST_CMD=${cmr_CMAKE_DIR}/bin/ctest
 
-    - cmr_JOBS="-j${cmr_JOBS_CNT}"
-
-    - cmr_RUN_TEST=1
 
   before_install:
     - mkdir ${cmr_BUILD_DIR}
@@ -73,15 +72,51 @@ build_linux_clang: &build_linux_clang
   compiler: clang
 
 
-# === macOS ===
+# === Android ===
 
-build_macos: &build_macos
-  os: osx
-  env:
-    - cmr_TARGET_OS=macos
-    - cmr_CMAKE_CMD=/path/to/3.4/cmake  # TODO:
-    - cmr_RUN_TEST=1
-    - cmr_JOBS="-jobs ${cmr_JOBS_CNT}"  # TODO: only if CMAKE_GENERATOR == "Xcode"
+build_android: &build_android
+  os: linux
+  dist: xenial
+  env: &build_android_env
+    - cmr_TARGET_OS=android
+    - cmr_JOBS="-j${cmr_JOBS_CNT}"
+
+    - cmr_CMAKE_RELEASE=cmake-3.6.0-Linux-x86_64
+    - cmr_CMAKE_DIR=${cmr_INSTALL_DIR}/${cmr_CMAKE_RELEASE}
+    - cmr_CMAKE_CMD=${cmr_CMAKE_DIR}/bin/cmake
+    - cmr_CTEST_CMD=${cmr_CMAKE_DIR}/bin/ctest
+
+    - cmr_CMAKE_BUILD_TYPE=Release
+
+    - cmr_ANDROID_NDK_VERSION=r19
+    - cmr_ANDROID_NDK_NAME=android-ndk-${cmr_ANDROID_NDK_VERSION}
+    - cmr_ANDROID_NDK_PLATFORM=${cmr_ANDROID_NDK_NAME}-linux-x86_64
+
+    - cmr_ANDROID_NDK=${cmr_INSTALL_DIR}/${cmr_ANDROID_NDK_NAME}
+    - cmr_CMAKE_TOOLCHAIN_FILE=${cmr_ANDROID_NDK}/build/cmake/android.toolchain.cmake
+
+    - cmr_CMAKE_GENERATOR="Ninja"
+
+    - cmr_ANDROID_CPP_FEATURES="rtti exceptions"
+    - cmr_ANDROID_TOOLCHAIN=clang
+
+
+  before_install:
+    - mkdir ${cmr_BUILD_DIR}
+    - mkdir ${cmr_INSTALL_DIR}
+    - mkdir ${cmr_DOWNLOAD_DIR}
+    - mkdir ${cmr_SAMPLE_LIB_DIR}
+    - ln -s ../../../../LibCMaker_STLCache ${cmr_SAMPLE_LIB_DIR}
+
+    - wget -c -N -P ${cmr_DOWNLOAD_DIR} https://cmake.org/files/v3.6/${cmr_CMAKE_RELEASE}.tar.gz
+    - tar -xf ${cmr_DOWNLOAD_DIR}/${cmr_CMAKE_RELEASE}.tar.gz --directory ${cmr_INSTALL_DIR}
+
+    - wget -c -N -P ${cmr_DOWNLOAD_DIR} https://dl.google.com/android/repository/${cmr_ANDROID_NDK_PLATFORM}.zip
+    - unzip -q $${cmr_DOWNLOAD_DIR}/${cmr_ANDROID_NDK_PLATFORM}.zip -d ${cmr_INSTALL_DIR}
+
+    - git clone https://github.com/LibCMaker/LibCMaker.git ${cmr_SAMPLE_LIB_DIR}/LibCMaker
+    - git clone https://github.com/LibCMaker/LibCMaker_GoogleTest.git ${cmr_SAMPLE_LIB_DIR}/LibCMaker_GoogleTest
+
 
 
 # === Windows ===
@@ -94,44 +129,120 @@ build_windows: &build_windows
     - RUN_TEST=1
 
 
-# === Android ===
+# === macOS ===
 
-build_android: &build_android
-  os: linux
-  dist: xenial
+build_macos: &build_macos
+  os: osx
   env:
-    - cmr_TARGET_OS=android
-    - cmr_CMAKE_CMD=/path/to/3.6/cmake  # TODO:
-    - cmr_JOBS="-j${cmr_JOBS_CNT}"  # TODO: only if CMAKE_GENERATOR == "Unix Makefiles", check it with "Ninja".
+    - cmr_TARGET_OS=macos
+    - cmr_CMAKE_CMD=/path/to/3.4/cmake  # TODO:
+    - cmr_RUN_TEST=1
+    - cmr_JOBS="-jobs ${cmr_JOBS_CNT}"  # TODO: only if CMAKE_GENERATOR == "Xcode"
 
 
 # === Build matrix ===
 
 matrix:
   include:
+
+# Linux
     - <<: *build_linux_gcc
       env:
         - *build_linux_env
         - cmr_CMAKE_BUILD_TYPE=Debug
         - cmr_BUILD_SHARED_LIBS=ON
 
-    - <<: *build_linux_gcc
-      env:
-        - *build_linux_env
-        - cmr_CMAKE_BUILD_TYPE=Debug
-        - cmr_BUILD_SHARED_LIBS=OFF
+#    - <<: *build_linux_gcc
+#      env:
+#        - *build_linux_env
+#        - cmr_CMAKE_BUILD_TYPE=Debug
+#        - cmr_BUILD_SHARED_LIBS=OFF
 
-    - <<: *build_linux_gcc
+#    - <<: *build_linux_gcc
+#      env:
+#        - *build_linux_env
+#        - cmr_CMAKE_BUILD_TYPE=Release
+#        - cmr_BUILD_SHARED_LIBS=ON
+
+#    - <<: *build_linux_gcc
+#      env:
+#        - *build_linux_env
+#        - cmr_CMAKE_BUILD_TYPE=Release
+#        - cmr_BUILD_SHARED_LIBS=OFF
+
+# Android
+    # shared, arm, 32bit
+    - <<: *build_android
       env:
-        - *build_linux_env
-        - cmr_CMAKE_BUILD_TYPE=Release
+        - *build_android_env
         - cmr_BUILD_SHARED_LIBS=ON
+        - cmr_ANDROID_STL=c++_shared
+        - cmr_ANDROID_ABI=armeabi-v7a
+        - cmr_ANDROID_NATIVE_API_LEVEL=16
 
-    - <<: *build_linux_gcc
-      env:
-        - *build_linux_env
-        - cmr_CMAKE_BUILD_TYPE=Release
-        - cmr_BUILD_SHARED_LIBS=OFF
+#    # shared, arm, 64bit
+#    - <<: *build_android
+#      env:
+#        - *build_android_env
+#        - cmr_BUILD_SHARED_LIBS=ON
+#        - cmr_ANDROID_STL=c++_shared
+#        - cmr_ANDROID_ABI=arm64-v8a
+#        - cmr_ANDROID_NATIVE_API_LEVEL=21
+
+#    # shared, x86, 32bit
+#    - <<: *build_android
+#      env:
+#        - *build_android_env
+#        - cmr_BUILD_SHARED_LIBS=ON
+#        - cmr_ANDROID_STL=c++_shared
+#        - cmr_ANDROID_ABI=x86
+#        - cmr_ANDROID_NATIVE_API_LEVEL=16
+
+#    # shared, x86, 64bit
+#    - <<: *build_android
+#      env:
+#        - *build_android_env
+#        - cmr_BUILD_SHARED_LIBS=ON
+#        - cmr_ANDROID_STL=c++_shared
+#        - cmr_ANDROID_ABI=x86_64
+#        - cmr_ANDROID_NATIVE_API_LEVEL=21
+
+
+#    # static, arm, 32bit
+#    - <<: *build_android
+#      env:
+#        - *build_android_env
+#        - cmr_BUILD_SHARED_LIBS=OFF
+#        - cmr_ANDROID_STL=c++_static
+#        - cmr_ANDROID_ABI=armeabi-v7a
+#        - cmr_ANDROID_NATIVE_API_LEVEL=16
+
+#    # static, arm, 64bit
+#    - <<: *build_android
+#      env:
+#        - *build_android_env
+#        - cmr_BUILD_SHARED_LIBS=OFF
+#        - cmr_ANDROID_STL=c++_static
+#        - cmr_ANDROID_ABI=arm64-v8a
+#        - cmr_ANDROID_NATIVE_API_LEVEL=21
+
+#    # static, x86, 32bit
+#    - <<: *build_android
+#      env:
+#        - *build_android_env
+#        - cmr_BUILD_SHARED_LIBS=OFF
+#        - cmr_ANDROID_STL=c++_static
+#        - cmr_ANDROID_ABI=x86
+#        - cmr_ANDROID_NATIVE_API_LEVEL=16
+
+#    # static, x86, 64bit
+#    - <<: *build_android
+#      env:
+#        - *build_android_env
+#        - cmr_BUILD_SHARED_LIBS=OFF
+#        - cmr_ANDROID_STL=c++_static
+#        - cmr_ANDROID_ABI=x86_64
+#        - cmr_ANDROID_NATIVE_API_LEVEL=21
 
 
 # === Build script ===
@@ -163,12 +274,11 @@ script:
         -DANDROID_NDK=${cmr_ANDROID_NDK}
           -DCMAKE_TOOLCHAIN_FILE=${cmr_CMAKE_TOOLCHAIN_FILE}
           -DCMAKE_GENERATOR=${cmr_CMAKE_GENERATOR}
-          -DCMAKE_MAKE_PROGRAM=${cmr_CMAKE_MAKE_PROGRAM}
           -DANDROID_ABI=${cmr_ANDROID_ABI}
           -DANDROID_NATIVE_API_LEVEL=${cmr_ANDROID_NATIVE_API_LEVEL}
           -DANDROID_TOOLCHAIN=${cmr_ANDROID_TOOLCHAIN}
           -DANDROID_STL=${cmr_ANDROID_STL}
-          -DANDROID_CPP_FEATURES=${ANDROID_CPP_FEATURES}
+          -DANDROID_CPP_FEATURES=${cmr_ANDROID_CPP_FEATURES}
     ; fi
 
   - ${cmr_CMAKE_CMD} --build . -- ${cmr_JOBS}

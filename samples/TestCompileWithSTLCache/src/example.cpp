@@ -23,6 +23,8 @@
 
 // The code is based on the code from <stlcache-source>/tests/test_lru.cpp
 
+#include <string> // NOTE: it is needed for Android NDK build.
+
 #include <stlcache/stlcache.hpp>
 
 int main(int argc, char* argv[])
