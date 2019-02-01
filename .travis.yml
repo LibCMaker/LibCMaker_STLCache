@@ -25,6 +25,7 @@ language: cpp
 env:
   global:
     - cmr_SAMPLE_DIR=${TRAVIS_BUILD_DIR}/samples/TestCompileWithSTLCache
+    - cmr_SAMPLE_LIB_DIR=${cmr_SAMPLE_DIR}/libs
     - cmr_BUILD_DIR=${cmr_SAMPLE_DIR}/build
     - cmr_INSTALL_DIR=${cmr_BUILD_DIR}/install
     - cmr_DOWNLOAD_DIR=${cmr_BUILD_DIR}/download
@@ -52,8 +53,14 @@ build_linux: &build_linux
     - mkdir ${cmr_BUILD_DIR}
     - mkdir ${cmr_INSTALL_DIR}
     - mkdir ${cmr_DOWNLOAD_DIR}
+    - mkdir ${cmr_SAMPLE_LIB_DIR}
+    - ln -s ../../../../LibCMaker_STLCache ${cmr_SAMPLE_LIB_DIR}
+
     - wget -c -N -P ${cmr_DOWNLOAD_DIR} https://cmake.org/files/v3.4/${cmr_CMAKE_RELEASE}.tar.gz
     - tar -xvf ${cmr_DOWNLOAD_DIR}/${cmr_CMAKE_RELEASE}.tar.gz --directory ${cmr_INSTALL_DIR}
+
+    - git clone https://github.com/LibCMaker/LibCMaker.git ${cmr_SAMPLE_LIB_DIR}/LibCMaker
+    - git clone https://github.com/LibCMaker/LibCMaker_GoogleTest.git ${cmr_SAMPLE_LIB_DIR}/LibCMaker_GoogleTest
 
 
 build_linux_gcc: &build_linux_gcc
