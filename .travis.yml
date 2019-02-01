@@ -115,23 +115,23 @@ matrix:
         - cmr_CMAKE_BUILD_TYPE=Debug
         - cmr_BUILD_SHARED_LIBS=ON
 
-#    - <<: *build_linux_gcc
-#      env:
-#        - *build_linux_env
-#        - cmr_CMAKE_BUILD_TYPE=Debug
-#        - cmr_BUILD_SHARED_LIBS=OFF
+    - <<: *build_linux_gcc
+      env:
+        - *build_linux_env
+        - cmr_CMAKE_BUILD_TYPE=Debug
+        - cmr_BUILD_SHARED_LIBS=OFF
 
-#    - <<: *build_linux_gcc
-#      env:
-#        - *build_linux_env
-#        - cmr_CMAKE_BUILD_TYPE=Release
-#        - cmr_BUILD_SHARED_LIBS=ON
+    - <<: *build_linux_gcc
+      env:
+        - *build_linux_env
+        - cmr_CMAKE_BUILD_TYPE=Release
+        - cmr_BUILD_SHARED_LIBS=ON
 
-#    - <<: *build_linux_gcc
-#      env:
-#        - *build_linux_env
-#        - cmr_CMAKE_BUILD_TYPE=Release
-#        - cmr_BUILD_SHARED_LIBS=OFF
+    - <<: *build_linux_gcc
+      env:
+        - *build_linux_env
+        - cmr_CMAKE_BUILD_TYPE=Release
+        - cmr_BUILD_SHARED_LIBS=OFF
 
 
 # === Build script ===
