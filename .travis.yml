@@ -154,23 +154,23 @@ matrix:
         - cmr_CMAKE_BUILD_TYPE=Debug
         - cmr_BUILD_SHARED_LIBS=ON
 
-#    - <<: *build_linux_gcc
-#      env:
-#        - *build_linux_env
-#        - cmr_CMAKE_BUILD_TYPE=Debug
-#        - cmr_BUILD_SHARED_LIBS=OFF
+    - <<: *build_linux_gcc
+      env:
+        - *build_linux_env
+        - cmr_CMAKE_BUILD_TYPE=Debug
+        - cmr_BUILD_SHARED_LIBS=OFF
 
-#    - <<: *build_linux_gcc
-#      env:
-#        - *build_linux_env
-#        - cmr_CMAKE_BUILD_TYPE=Release
-#        - cmr_BUILD_SHARED_LIBS=ON
+    - <<: *build_linux_gcc
+      env:
+        - *build_linux_env
+        - cmr_CMAKE_BUILD_TYPE=Release
+        - cmr_BUILD_SHARED_LIBS=ON
 
-#    - <<: *build_linux_gcc
-#      env:
-#        - *build_linux_env
-#        - cmr_CMAKE_BUILD_TYPE=Release
-#        - cmr_BUILD_SHARED_LIBS=OFF
+    - <<: *build_linux_gcc
+      env:
+        - *build_linux_env
+        - cmr_CMAKE_BUILD_TYPE=Release
+        - cmr_BUILD_SHARED_LIBS=OFF
 
 # Android
     # shared, arm, 32bit
@@ -182,69 +182,69 @@ matrix:
         - cmr_ANDROID_ABI=armeabi-v7a
         - cmr_ANDROID_NATIVE_API_LEVEL=16
 
-#    # shared, arm, 64bit
-#    - <<: *build_android
-#      env:
-#        - *build_android_env
-#        - cmr_BUILD_SHARED_LIBS=ON
-#        - cmr_ANDROID_STL=c++_shared
-#        - cmr_ANDROID_ABI=arm64-v8a
-#        - cmr_ANDROID_NATIVE_API_LEVEL=21
+    # shared, arm, 64bit
+    - <<: *build_android
+      env:
+        - *build_android_env
+        - cmr_BUILD_SHARED_LIBS=ON
+        - cmr_ANDROID_STL=c++_shared
+        - cmr_ANDROID_ABI=arm64-v8a
+        - cmr_ANDROID_NATIVE_API_LEVEL=21
 
-#    # shared, x86, 32bit
-#    - <<: *build_android
-#      env:
-#        - *build_android_env
-#        - cmr_BUILD_SHARED_LIBS=ON
-#        - cmr_ANDROID_STL=c++_shared
-#        - cmr_ANDROID_ABI=x86
-#        - cmr_ANDROID_NATIVE_API_LEVEL=16
+    # shared, x86, 32bit
+    - <<: *build_android
+      env:
+        - *build_android_env
+        - cmr_BUILD_SHARED_LIBS=ON
+        - cmr_ANDROID_STL=c++_shared
+        - cmr_ANDROID_ABI=x86
+        - cmr_ANDROID_NATIVE_API_LEVEL=16
 
-#    # shared, x86, 64bit
-#    - <<: *build_android
-#      env:
-#        - *build_android_env
-#        - cmr_BUILD_SHARED_LIBS=ON
-#        - cmr_ANDROID_STL=c++_shared
-#        - cmr_ANDROID_ABI=x86_64
-#        - cmr_ANDROID_NATIVE_API_LEVEL=21
+    # shared, x86, 64bit
+    - <<: *build_android
+      env:
+        - *build_android_env
+        - cmr_BUILD_SHARED_LIBS=ON
+        - cmr_ANDROID_STL=c++_shared
+        - cmr_ANDROID_ABI=x86_64
+        - cmr_ANDROID_NATIVE_API_LEVEL=21
 
 
-#    # static, arm, 32bit
-#    - <<: *build_android
-#      env:
-#        - *build_android_env
-#        - cmr_BUILD_SHARED_LIBS=OFF
-#        - cmr_ANDROID_STL=c++_static
-#        - cmr_ANDROID_ABI=armeabi-v7a
-#        - cmr_ANDROID_NATIVE_API_LEVEL=16
+    # static, arm, 32bit
+    - <<: *build_android
+      env:
+        - *build_android_env
+        - cmr_BUILD_SHARED_LIBS=OFF
+        - cmr_ANDROID_STL=c++_static
+        - cmr_ANDROID_ABI=armeabi-v7a
+        - cmr_ANDROID_NATIVE_API_LEVEL=16
 
-#    # static, arm, 64bit
-#    - <<: *build_android
-#      env:
-#        - *build_android_env
-#        - cmr_BUILD_SHARED_LIBS=OFF
-#        - cmr_ANDROID_STL=c++_static
-#        - cmr_ANDROID_ABI=arm64-v8a
-#        - cmr_ANDROID_NATIVE_API_LEVEL=21
+    # static, arm, 64bit
+    - <<: *build_android
+      env:
+        - *build_android_env
+        - cmr_BUILD_SHARED_LIBS=OFF
+        - cmr_ANDROID_STL=c++_static
+        - cmr_ANDROID_ABI=arm64-v8a
+        - cmr_ANDROID_NATIVE_API_LEVEL=21
 
-#    # static, x86, 32bit
-#    - <<: *build_android
-#      env:
-#        - *build_android_env
-#        - cmr_BUILD_SHARED_LIBS=OFF
-#        - cmr_ANDROID_STL=c++_static
-#        - cmr_ANDROID_ABI=x86
-#        - cmr_ANDROID_NATIVE_API_LEVEL=16
+    # static, x86, 32bit
+    - <<: *build_android
+      env:
+        - *build_android_env
+        - cmr_BUILD_SHARED_LIBS=OFF
+        - cmr_ANDROID_STL=c++_static
+        - cmr_ANDROID_ABI=x86
+        - cmr_ANDROID_NATIVE_API_LEVEL=16
 
-#    # static, x86, 64bit
-#    - <<: *build_android
-#      env:
-#        - *build_android_env
-#        - cmr_BUILD_SHARED_LIBS=OFF
-#        - cmr_ANDROID_STL=c++_static
-#        - cmr_ANDROID_ABI=x86_64
-#        - cmr_ANDROID_NATIVE_API_LEVEL=21
+    # static, x86, 64bit
+    - <<: *build_android
+      env:
+        - *build_android_env
+        - cmr_BUILD_SHARED_LIBS=OFF
+        - cmr_ANDROID_STL=c++_static
+        - cmr_ANDROID_ABI=x86_64
+        - cmr_ANDROID_NATIVE_API_LEVEL=21
 
 
 # === Build script ===
