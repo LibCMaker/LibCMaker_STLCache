@@ -1,0 +1,145 @@
+# How to set up Travis CI with multiple languages:
+# https://stackoverflow.com/a/44054333
+
+# Android, iOS, Linux, macOS, Windows
+
+# debug, release
+# shared, static
+# x86, arm
+# 32bit, 64bit
+# min cmake: linux 3.4, windows 3.11, android 3.6
+# max cmake: latest (3.13.3)
+
+# Win7, WinXP
+# make, ninja
+# msvc, mingw-w64
+# gcc, clang, msvc
+
+
+# === Common ===
+
+sudo: false
+
+language: cpp
+
+env:
+  global:
+    - cmr_BUILD_DIR=${TRAVIS_BUILD_DIR}/build
+    - cmr_INSTALL_DIR=${cmr_BUILD_DIR}/install
+    - cmr_DOWNLOAD_DIR=${cmr_BUILD_DIR}/download
+    - cmr_JOBS_CNT=4
+
+
+# === Linux ===
+
+build_linux: &build_linux
+  os: linux
+  dist: xenial
+  env:
+    - cmr_TARGET_OS=linux
+    - cmr_CMAKE_RELEASE=cmake-3.4.0-Linux-x86_64
+    - cmr_CMAKE_DIR=${cmr_INSTALL_DIR}/${cmr_CMAKE_RELEASE}
+    - cmr_CMAKE_CMD=${cmr_CMAKE_DIR}/bin/cmake
+    - cmr_CTEST_CMD=${cmr_CMAKE_DIR}/bin/ctest
+    - cmr_RUN_TEST=1
+    - cmr_JOBS="-j${cmr_JOBS_CNT}"
+  before_install:
+    - wget -c -N -P ${cmr_DOWNLOAD_DIR} https://cmake.org/files/v3.4/${cmr_CMAKE_RELEASE}.tar.gz
+    - tar -xvf ${cmr_DOWNLOAD_DIR}/${cmr_CMAKE_RELEASE}.tar.gz --directory ${cmr_INSTALL_DIR}
+
+build_linux_gcc: &build_linux_gcc
+  <<: *build_linux
+  compiler: gcc
+
+build_linux_clang: &build_linux_clang
+  <<: *build_linux
+  compiler: clang
+
+
+# === macOS ===
+
+build_macos: &build_macos
+  os: osx
+  env:
+    - cmr_TARGET_OS=macos
+    - cmr_CMAKE_CMD=/path/to/3.4/cmake  # TODO:
+    - cmr_RUN_TEST=1
+    - cmr_JOBS="-jobs ${cmr_JOBS_CNT}"  # TODO: only if CMAKE_GENERATOR == "Xcode"
+
+
+# === Windows ===
+
+build_windows: &build_windows
+  os: windows
+  env:
+    - cmr_TARGET_OS=windows
+    - cmr_CMAKE_CMD=/path/to/3.11/cmake  # TODO:
+    - RUN_TEST=1
+
+
+# === Android ===
+
+build_android: &build_android
+  os: linux
+  dist: xenial
+  env:
+    - cmr_TARGET_OS=android
+    - cmr_CMAKE_CMD=/path/to/3.6/cmake  # TODO:
+    - cmr_JOBS="-j${cmr_JOBS_CNT}"  # TODO: only if CMAKE_GENERATOR == "Unix Makefiles", check it with "Ninja".
+
+
+# === Build matrix ===
+
+matrix:
+  include:
+    - <<: *build_linux_gcc
+      env:
+        - cmr_CMAKE_BUILD_TYPE=Debug
+        - cmr_BUILD_SHARED_LIBS=ON
+
+    - <<: *build_linux_gcc
+      env:
+        - cmr_CMAKE_BUILD_TYPE=Debug
+        - cmr_BUILD_SHARED_LIBS=OFF
+
+    - <<: *build_linux_gcc
+      env:
+        - cmr_CMAKE_BUILD_TYPE=Release
+        - cmr_BUILD_SHARED_LIBS=ON
+
+    - <<: *build_linux_gcc
+      env:
+        - cmr_CMAKE_BUILD_TYPE=Release
+        - cmr_BUILD_SHARED_LIBS=OFF
+
+
+
+# === Build script ===
+
+before_script:
+  - mkdir ${cmr_BUILD_DIR}
+  - cd ${cmr_BUILD_DIR}
+
+script:
+#  - if [[ "$cmr_TARGET_OS" == "linux" ]]; then  cmake && ctest ; fi
+  - ${cmr_CMAKE_CMD} ../
+      -Dcmr_PRINT_DEBUG=ON
+        -DCMAKE_VERBOSE_MAKEFILE=ON
+        -DCMAKE_COLOR_MAKEFILE=ON
+        -DBUILD_TESTING=ON
+      -DCMAKE_INSTALL_PREFIX=${cmr_INSTALL_DIR}
+        -DCMAKE_GENERATOR=${cmr_CMAKE_GENERATOR}
+        -DCMAKE_MAKE_PROGRAM=${cmr_CMAKE_MAKE_PROGRAM}
+        -DCMAKE_BUILD_TYPE=${cmr_CMAKE_BUILD_TYPE}
+        -DBUILD_SHARED_LIBS=${cmr_BUILD_SHARED_LIBS}
+      -DANDROID_NDK=${cmr_ANDROID_NDK}
+        -DCMAKE_TOOLCHAIN_FILE=${cmr_CMAKE_TOOLCHAIN_FILE}
+        -DANDROID_ABI=${cmr_ANDROID_ABI}
+        -DANDROID_NATIVE_API_LEVEL=${cmr_ANDROID_NATIVE_API_LEVEL}
+        -DANDROID_TOOLCHAIN=${cmr_ANDROID_TOOLCHAIN}
+        -DANDROID_STL=${cmr_ANDROID_STL}
+        -DANDROID_CPP_FEATURES=${ANDROID_CPP_FEATURES}
+
+  - ${cmr_CMAKE_CMD} --build . -- ${cmr_JOBS}
+
+  - if [[ -n "$cmr_RUN_TEST" ]]; then  ${cmr_CTEST_CMD} --output-on-failure  ; fi
