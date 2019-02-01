@@ -47,7 +47,6 @@ build_linux: &build_linux
     - cmr_CMAKE_CMD=${cmr_CMAKE_DIR}/bin/cmake
     - cmr_CTEST_CMD=${cmr_CMAKE_DIR}/bin/ctest
 
-
   before_install:
     - mkdir ${cmr_BUILD_DIR}
     - mkdir ${cmr_INSTALL_DIR}
@@ -100,7 +99,6 @@ build_android: &build_android
     - cmr_ANDROID_CPP_FEATURES="rtti exceptions"
     - cmr_ANDROID_TOOLCHAIN=clang
 
-
   before_install:
     - mkdir ${cmr_BUILD_DIR}
     - mkdir ${cmr_INSTALL_DIR}
@@ -117,6 +115,10 @@ build_android: &build_android
     - git clone https://github.com/LibCMaker/LibCMaker.git ${cmr_SAMPLE_LIB_DIR}/LibCMaker
     - git clone https://github.com/LibCMaker/LibCMaker_GoogleTest.git ${cmr_SAMPLE_LIB_DIR}/LibCMaker_GoogleTest
 
+  addons:
+    apt:
+      packages:
+        - ninja-build
 
 
 # === Windows ===
