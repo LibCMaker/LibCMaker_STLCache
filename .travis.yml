@@ -38,12 +38,13 @@ env:
 # === Linux ===
 
 build_linux: &build_linux
+  stage: Test
   os: linux
   dist: xenial
+
   env: &build_linux_env
     - cmr_TARGET_OS=linux
     - cmr_JOBS="-j${cmr_JOBS_CNT}"
-    - cmr_RUN_TEST=1
 
     - cmr_CMAKE_RELEASE=cmake-3.4.0-Linux-x86_64
     - cmr_CMAKE_DIR=${cmr_INSTALL_DIR}/${cmr_CMAKE_RELEASE}
@@ -65,6 +66,24 @@ build_linux: &build_linux
     - git clone https://github.com/LibCMaker/LibCMaker_GoogleTest.git ${cmr_SAMPLE_LIB_DIR}/LibCMaker_GoogleTest
 
 
+  before_script:
+    - cd ${cmr_BUILD_DIR}
+
+  script:
+    - ${cmr_CMAKE_CMD} ../
+        -Dcmr_PRINT_DEBUG=ON
+        -DCMAKE_VERBOSE_MAKEFILE=ON
+        -DCMAKE_COLOR_MAKEFILE=ON
+        -DBUILD_TESTING=ON
+        -DCMAKE_INSTALL_PREFIX=${cmr_INSTALL_DIR}
+          -DCMAKE_BUILD_TYPE=${cmr_CMAKE_BUILD_TYPE}
+          -DBUILD_SHARED_LIBS=${cmr_BUILD_SHARED_LIBS}
+
+    - ${cmr_CMAKE_CMD} --build . -- ${cmr_JOBS}
+
+    - ${cmr_CTEST_CMD} --output-on-failure
+
+
 build_linux_gcc: &build_linux_gcc
   <<: *build_linux
   compiler: gcc
@@ -78,8 +97,14 @@ build_linux_clang: &build_linux_clang
 # === Android ===
 
 build_android: &build_android
+  stage: Test
   os: linux
   dist: xenial
+  addons:
+    apt:
+      packages:
+        - ninja-build
+
   env: &build_android_env
     - cmr_TARGET_OS=android
     - cmr_JOBS="-j${cmr_JOBS_CNT}"
@@ -119,36 +144,57 @@ build_android: &build_android
     - git clone https://github.com/LibCMaker/LibCMaker.git ${cmr_SAMPLE_LIB_DIR}/LibCMaker
     - git clone https://github.com/LibCMaker/LibCMaker_GoogleTest.git ${cmr_SAMPLE_LIB_DIR}/LibCMaker_GoogleTest
 
-  addons:
-    apt:
-      packages:
-        - ninja-build
+  before_script:
+    - cd ${cmr_BUILD_DIR}
+
+  script:
+    - ${cmr_CMAKE_CMD} ../
+        -Dcmr_PRINT_DEBUG=ON
+        -DCMAKE_VERBOSE_MAKEFILE=ON
+        -DCMAKE_COLOR_MAKEFILE=ON
+        -DBUILD_TESTING=ON
+        -DCMAKE_INSTALL_PREFIX=${cmr_INSTALL_DIR}
+          -DCMAKE_BUILD_TYPE=${cmr_CMAKE_BUILD_TYPE}
+          -DBUILD_SHARED_LIBS=${cmr_BUILD_SHARED_LIBS}
+        -DANDROID_NDK=${cmr_ANDROID_NDK}
+          -DCMAKE_TOOLCHAIN_FILE=${cmr_CMAKE_TOOLCHAIN_FILE}
+          -DCMAKE_GENERATOR="${cmr_CMAKE_GENERATOR}"
+          -DANDROID_ABI=${cmr_ANDROID_ABI}
+          -DANDROID_NATIVE_API_LEVEL=${cmr_ANDROID_NATIVE_API_LEVEL}
+          -DANDROID_TOOLCHAIN=${cmr_ANDROID_TOOLCHAIN}
+          -DANDROID_STL=${cmr_ANDROID_STL}
+          -DANDROID_CPP_FEATURES="${cmr_ANDROID_CPP_FEATURES}"
+
+    - ${cmr_CMAKE_CMD} --build . -- ${cmr_JOBS}
+
+#    - ${cmr_CTEST_CMD} --output-on-failure
 
 
 # === Windows ===
 
 build_windows: &build_windows
+  stage: Test
   os: windows
   env:
     - cmr_TARGET_OS=windows
     - cmr_CMAKE_CMD=/path/to/3.11/cmake  # TODO:
-    - RUN_TEST=1
 
 
 # === macOS ===
 
 build_macos: &build_macos
+  stage: Test
   os: osx
   env:
     - cmr_TARGET_OS=macos
     - cmr_CMAKE_CMD=/path/to/3.4/cmake  # TODO:
-    - cmr_RUN_TEST=1
     - cmr_JOBS="-jobs ${cmr_JOBS_CNT}"  # TODO: only if CMAKE_GENERATOR == "Xcode"
 
 
 # === iOS ===
 
 build_ios: &build_ios
+  stage: Test
   os: osx
   env:
     - cmr_TARGET_OS=ios
@@ -158,33 +204,62 @@ build_ios: &build_ios
 
 # === Build matrix ===
 
-matrix:
+jobs:
   include:
 
-# Linux
-    # debug, shared
+# Linux, gcc
+    # gcc, debug, shared
     - <<: *build_linux_gcc
       env:
         - *build_linux_env
         - cmr_CMAKE_BUILD_TYPE=Debug
         - cmr_BUILD_SHARED_LIBS=ON
 
-    # debug, static
+    # gcc, debug, static
     - <<: *build_linux_gcc
       env:
         - *build_linux_env
         - cmr_CMAKE_BUILD_TYPE=Debug
         - cmr_BUILD_SHARED_LIBS=OFF
 
-    # release, shared
+    # gcc, release, shared
     - <<: *build_linux_gcc
       env:
         - *build_linux_env
         - cmr_CMAKE_BUILD_TYPE=Release
         - cmr_BUILD_SHARED_LIBS=ON
 
-    # release, static
+    # gcc, release, static
     - <<: *build_linux_gcc
+      env:
+        - *build_linux_env
+        - cmr_CMAKE_BUILD_TYPE=Release
+        - cmr_BUILD_SHARED_LIBS=OFF
+
+# Linux, clang
+    # clang, debug, shared
+    - <<: *build_linux_clang
+      env:
+        - *build_linux_env
+        - cmr_CMAKE_BUILD_TYPE=Debug
+        - cmr_BUILD_SHARED_LIBS=ON
+
+    # clang, debug, static
+    - <<: *build_linux_clang
+      env:
+        - *build_linux_env
+        - cmr_CMAKE_BUILD_TYPE=Debug
+        - cmr_BUILD_SHARED_LIBS=OFF
+
+    # clang, release, shared
+    - <<: *build_linux_clang
+      env:
+        - *build_linux_env
+        - cmr_CMAKE_BUILD_TYPE=Release
+        - cmr_BUILD_SHARED_LIBS=ON
+
+    # clang, release, static
+    - <<: *build_linux_clang
       env:
         - *build_linux_env
         - cmr_CMAKE_BUILD_TYPE=Release
@@ -263,46 +338,3 @@ matrix:
         - cmr_ANDROID_STL=c++_static
         - cmr_ANDROID_ABI=x86_64
         - cmr_ANDROID_NATIVE_API_LEVEL=21
-
-
-# === Build script ===
-
-before_script:
-  - cd ${cmr_BUILD_DIR}
-
-script:
-  - if [[ "$cmr_TARGET_OS" == "linux" ]]; then
-      ${cmr_CMAKE_CMD} ../
-        -Dcmr_PRINT_DEBUG=ON
-        -DCMAKE_VERBOSE_MAKEFILE=ON
-        -DCMAKE_COLOR_MAKEFILE=ON
-        -DBUILD_TESTING=ON
-        -DCMAKE_INSTALL_PREFIX=${cmr_INSTALL_DIR}
-          -DCMAKE_BUILD_TYPE=${cmr_CMAKE_BUILD_TYPE}
-          -DBUILD_SHARED_LIBS=${cmr_BUILD_SHARED_LIBS}
-    ; fi
-
-  - if [[ "$cmr_TARGET_OS" == "android" ]]; then
-      ${cmr_CMAKE_CMD} ../
-        -Dcmr_PRINT_DEBUG=ON
-        -DCMAKE_VERBOSE_MAKEFILE=ON
-        -DCMAKE_COLOR_MAKEFILE=ON
-        -DBUILD_TESTING=ON
-        -DCMAKE_INSTALL_PREFIX=${cmr_INSTALL_DIR}
-          -DCMAKE_BUILD_TYPE=${cmr_CMAKE_BUILD_TYPE}
-          -DBUILD_SHARED_LIBS=${cmr_BUILD_SHARED_LIBS}
-        -DANDROID_NDK=${cmr_ANDROID_NDK}
-          -DCMAKE_TOOLCHAIN_FILE=${cmr_CMAKE_TOOLCHAIN_FILE}
-          -DCMAKE_GENERATOR="${cmr_CMAKE_GENERATOR}"
-          -DANDROID_ABI=${cmr_ANDROID_ABI}
-          -DANDROID_NATIVE_API_LEVEL=${cmr_ANDROID_NATIVE_API_LEVEL}
-          -DANDROID_TOOLCHAIN=${cmr_ANDROID_TOOLCHAIN}
-          -DANDROID_STL=${cmr_ANDROID_STL}
-          -DANDROID_CPP_FEATURES="${cmr_ANDROID_CPP_FEATURES}"
-    ; fi
-
-  - ${cmr_CMAKE_CMD} --build . -- ${cmr_JOBS}
-
-  - if [[ -n "$cmr_RUN_TEST" ]]; then
-      ${cmr_CTEST_CMD} --output-on-failure
-    ; fi
