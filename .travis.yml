@@ -338,3 +338,11 @@ jobs:
         - cmr_ANDROID_STL=c++_static
         - cmr_ANDROID_ABI=x86_64
         - cmr_ANDROID_NATIVE_API_LEVEL=21
+
+
+notifications:
+  email:
+    recipients:
+      - nfeodonit@yandex.com
+    on_success: change
+    on_failure: always
