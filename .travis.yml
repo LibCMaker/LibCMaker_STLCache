@@ -9,11 +9,15 @@ env:
     # NOTE: LibCMaker lib name.
     # NOTE: See below the lib deps in 'before_install' for every target OS.
     - cmr_LIB_NAME=STLCache
+    - cmr_BUILD_TESTING=ON
+
     - cmr_SAMPLE_DIR=${TRAVIS_BUILD_DIR}/samples/TestCompileWith${cmr_LIB_NAME}
     - cmr_SAMPLE_LIB_DIR=${cmr_SAMPLE_DIR}/libs
+
     - cmr_BUILD_DIR=${cmr_SAMPLE_DIR}/build
     - cmr_INSTALL_DIR=${cmr_BUILD_DIR}/install
     - cmr_DOWNLOAD_DIR=${cmr_BUILD_DIR}/download
+
     - cmr_JOBS_CNT=4
 
 
@@ -56,7 +60,7 @@ build_linux: &build_linux
         -Dcmr_PRINT_DEBUG=ON
         -DCMAKE_VERBOSE_MAKEFILE=ON
         -DCMAKE_COLOR_MAKEFILE=ON
-        -DBUILD_TESTING=ON
+        -DBUILD_TESTING=${cmr_BUILD_TESTING}
         -DCMAKE_INSTALL_PREFIX=${cmr_INSTALL_DIR}
           -DCMAKE_BUILD_TYPE=${cmr_CMAKE_BUILD_TYPE}
           -DBUILD_SHARED_LIBS=${cmr_BUILD_SHARED_LIBS}
@@ -134,7 +138,7 @@ build_android: &build_android
         -Dcmr_PRINT_DEBUG=ON
         -DCMAKE_VERBOSE_MAKEFILE=ON
         -DCMAKE_COLOR_MAKEFILE=ON
-        -DBUILD_TESTING=ON
+        -DBUILD_TESTING=${cmr_BUILD_TESTING}
         -DCMAKE_INSTALL_PREFIX=${cmr_INSTALL_DIR}
           -DCMAKE_BUILD_TYPE=${cmr_CMAKE_BUILD_TYPE}
           -DBUILD_SHARED_LIBS=${cmr_BUILD_SHARED_LIBS}

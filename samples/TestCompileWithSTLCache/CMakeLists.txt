@@ -46,6 +46,7 @@ endif()
 #-----------------------------------------------------------------------
 
 set(libs_DIR "${CMAKE_CURRENT_LIST_DIR}/libs")
+set(cmr_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}")
 # To use below for sample sources.
 set(cmr_UNPACKED_DIR ${CMAKE_CURRENT_BINARY_DIR}/download/unpacked)
 
