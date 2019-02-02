@@ -1,21 +1,3 @@
-# How to set up Travis CI with multiple languages:
-# https://stackoverflow.com/a/44054333
-
-# Android, iOS, Linux, macOS, Windows
-
-# debug, release
-# shared, static
-# x86, arm
-# 32bit, 64bit
-# min cmake: linux 3.4, windows 3.11, android 3.6
-# max cmake: latest (3.13.3)
-
-# Win7, WinXP
-# make, ninja
-# msvc, mingw-w64
-# gcc, clang, msvc
-
-
 # === Common ===
 
 sudo: false
@@ -168,38 +150,6 @@ build_android: &build_android
     - ${cmr_CMAKE_CMD} --build . -- ${cmr_JOBS}
 
 #    - ${cmr_CTEST_CMD} --output-on-failure
-
-
-# === Windows ===
-
-build_windows: &build_windows
-  stage: Test
-  os: windows
-  env:
-    - cmr_TARGET_OS=windows
-    - cmr_CMAKE_CMD=/path/to/3.11/cmake  # TODO:
-
-
-# === macOS ===
-
-build_macos: &build_macos
-  stage: Test
-  os: osx
-  env:
-    - cmr_TARGET_OS=macos
-    - cmr_CMAKE_CMD=/path/to/3.4/cmake  # TODO:
-    - cmr_JOBS="-jobs ${cmr_JOBS_CNT}"  # TODO: only if CMAKE_GENERATOR == "Xcode"
-
-
-# === iOS ===
-
-build_ios: &build_ios
-  stage: Test
-  os: osx
-  env:
-    - cmr_TARGET_OS=ios
-    - cmr_CMAKE_CMD=/path/to/3.4/cmake  # TODO:
-    - cmr_JOBS="-jobs ${cmr_JOBS_CNT}"  # TODO: only if CMAKE_GENERATOR == "Xcode"
 
 
 # === Build matrix ===
