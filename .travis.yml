@@ -208,66 +208,66 @@ jobs:
   include:
 
 # Linux, gcc
-    # gcc, debug, shared
     - <<: *build_linux_gcc
+      name: "Linux, gcc, debug, shared"
       env:
         - *build_linux_env
         - cmr_CMAKE_BUILD_TYPE=Debug
         - cmr_BUILD_SHARED_LIBS=ON
 
-    # gcc, debug, static
     - <<: *build_linux_gcc
+      name: "Linux, gcc, debug, static"
       env:
         - *build_linux_env
         - cmr_CMAKE_BUILD_TYPE=Debug
         - cmr_BUILD_SHARED_LIBS=OFF
 
-    # gcc, release, shared
     - <<: *build_linux_gcc
+      name: "Linux, gcc, release, shared"
       env:
         - *build_linux_env
         - cmr_CMAKE_BUILD_TYPE=Release
         - cmr_BUILD_SHARED_LIBS=ON
 
-    # gcc, release, static
     - <<: *build_linux_gcc
+      name: "Linux, gcc, release, static"
       env:
         - *build_linux_env
         - cmr_CMAKE_BUILD_TYPE=Release
         - cmr_BUILD_SHARED_LIBS=OFF
 
 # Linux, clang
-    # clang, debug, shared
     - <<: *build_linux_clang
+      name: "Linux, clang, debug, shared"
       env:
         - *build_linux_env
         - cmr_CMAKE_BUILD_TYPE=Debug
         - cmr_BUILD_SHARED_LIBS=ON
 
-    # clang, debug, static
     - <<: *build_linux_clang
+      name: "Linux, clang, debug, static"
       env:
         - *build_linux_env
         - cmr_CMAKE_BUILD_TYPE=Debug
         - cmr_BUILD_SHARED_LIBS=OFF
 
-    # clang, release, shared
     - <<: *build_linux_clang
+      name: "Linux, clang, release, shared"
       env:
         - *build_linux_env
         - cmr_CMAKE_BUILD_TYPE=Release
         - cmr_BUILD_SHARED_LIBS=ON
 
-    # clang, release, static
     - <<: *build_linux_clang
+      name: "Linux, clang, release, static"
       env:
         - *build_linux_env
         - cmr_CMAKE_BUILD_TYPE=Release
         - cmr_BUILD_SHARED_LIBS=OFF
 
-# Android
-    # shared, arm, 32bit
+# Android, shared
     - <<: *build_android
+      name: "Android, shared, armeabi-v7a"
       env:
         - *build_android_env
         - cmr_BUILD_SHARED_LIBS=ON
@@ -275,8 +275,8 @@ jobs:
         - cmr_ANDROID_ABI=armeabi-v7a
         - cmr_ANDROID_NATIVE_API_LEVEL=16
 
-    # shared, arm, 64bit
     - <<: *build_android
+      name: "Android, shared, arm64-v8a"
       env:
         - *build_android_env
         - cmr_BUILD_SHARED_LIBS=ON
@@ -284,8 +284,8 @@ jobs:
         - cmr_ANDROID_ABI=arm64-v8a
         - cmr_ANDROID_NATIVE_API_LEVEL=21
 
-    # shared, x86, 32bit
     - <<: *build_android
+      name: "Android, shared, x86"
       env:
         - *build_android_env
         - cmr_BUILD_SHARED_LIBS=ON
@@ -293,8 +293,8 @@ jobs:
         - cmr_ANDROID_ABI=x86
         - cmr_ANDROID_NATIVE_API_LEVEL=16
 
-    # shared, x86, 64bit
     - <<: *build_android
+      name: "Android, shared, x86_64"
       env:
         - *build_android_env
         - cmr_BUILD_SHARED_LIBS=ON
@@ -302,9 +302,9 @@ jobs:
         - cmr_ANDROID_ABI=x86_64
         - cmr_ANDROID_NATIVE_API_LEVEL=21
 
-
-    # static, arm, 32bit
+# Android, static
     - <<: *build_android
+      name: "Android, static, armeabi-v7a"
       env:
         - *build_android_env
         - cmr_BUILD_SHARED_LIBS=OFF
@@ -312,8 +312,8 @@ jobs:
         - cmr_ANDROID_ABI=armeabi-v7a
         - cmr_ANDROID_NATIVE_API_LEVEL=16
 
-    # static, arm, 64bit
     - <<: *build_android
+      name: "Android, static, arm64-v8a"
       env:
         - *build_android_env
         - cmr_BUILD_SHARED_LIBS=OFF
@@ -321,8 +321,8 @@ jobs:
         - cmr_ANDROID_ABI=arm64-v8a
         - cmr_ANDROID_NATIVE_API_LEVEL=21
 
-    # static, x86, 32bit
     - <<: *build_android
+      name: "Android, static, x86"
       env:
         - *build_android_env
         - cmr_BUILD_SHARED_LIBS=OFF
@@ -330,8 +330,8 @@ jobs:
         - cmr_ANDROID_ABI=x86
         - cmr_ANDROID_NATIVE_API_LEVEL=16
 
-    # static, x86, 64bit
     - <<: *build_android
+      name: "Android, static, x86_64"
       env:
         - *build_android_env
         - cmr_BUILD_SHARED_LIBS=OFF
