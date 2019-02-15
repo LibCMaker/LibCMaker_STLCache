@@ -157,32 +157,32 @@ build_windows_msvc_x64: &build_windows_msvc_x64
   <<: *build_windows_msvc
   env: &build_windows_msvc_x64_env
     - *build_windows_msvc_env
-    - cmr_CMAKE_GENERATOR_PLATFORM=x64
-    - cmr_CMAKE_GENERATOR_TOOLSET=""
+    - cmr_CMAKE_GENERATOR_PLATFORM="x64"
+    - cmr_CMAKE_GENERATOR_TOOLSET="v141,host=x64"
 
 
 build_windows_msvc_x32: &build_windows_msvc_x32  # TODO:
   <<: *build_windows_msvc
   env: &build_windows_msvc_x32_env
     - *build_windows_msvc_env
-    - cmr_CMAKE_GENERATOR_PLATFORM=""
-    - cmr_CMAKE_GENERATOR_TOOLSET=""
+    - cmr_CMAKE_GENERATOR_PLATFORM="Win32"
+    - cmr_CMAKE_GENERATOR_TOOLSET="v141,host=x64"
 
 
 build_windows_msvc_winxp: &build_windows_msvc_winxp
   <<: *build_windows_msvc
   env: &build_windows_msvc_winxp_env
     - *build_windows_msvc_env
-    - cmr_CMAKE_GENERATOR_PLATFORM=""
-    - cmr_CMAKE_GENERATOR_TOOLSET="v141_xp"
+    - cmr_CMAKE_GENERATOR_PLATFORM="Win32"
+    - cmr_CMAKE_GENERATOR_TOOLSET="v141_xp,host=x64"
 
 
 build_windows_msvc_arm: &build_windows_msvc_arm  # TODO:
   <<: *build_windows_msvc
   env: &build_windows_msvc_arm_env
     - *build_windows_msvc_env
-    - cmr_CMAKE_GENERATOR_PLATFORM=ARM
-    - cmr_CMAKE_GENERATOR_TOOLSET=""
+    - cmr_CMAKE_GENERATOR_PLATFORM="ARM"  # TODO: or "ARM64"
+    - cmr_CMAKE_GENERATOR_TOOLSET="v141,host=x64"
 
 
 build_windows_ninja: &build_windows_ninja  # TODO:
