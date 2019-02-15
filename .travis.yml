@@ -105,6 +105,8 @@ build_windows: &build_windows
 
     - cmr_ATTACH_WX_CONSOLE=ON
 
+    - PATH=${cmr_INSTALL_DIR}/bin:${PATH}
+
   before_install:
     - cp -r ${cmr_SAMPLE_SRC_DIR} ${cmr_WORK_DIR}
     - mkdir ${cmr_SAMPLE_LIB_DIR}
@@ -135,9 +137,9 @@ build_windows: &build_windows
         -Dcmr_UNPACKED_DIR=${cmr_DOWNLOAD_DIR}/unpacked
           -DCMAKE_BUILD_TYPE=${cmr_CMAKE_BUILD_TYPE}
           -DBUILD_SHARED_LIBS=${cmr_BUILD_SHARED_LIBS}
-        -DCMAKE_GENERATOR=${cmr_CMAKE_GENERATOR}
-          -DCMAKE_GENERATOR_PLATFORM=${cmr_CMAKE_GENERATOR_PLATFORM}
-          -DCMAKE_GENERATOR_TOOLSET=${cmr_CMAKE_GENERATOR_TOOLSET}
+        -DCMAKE_GENERATOR="${cmr_CMAKE_GENERATOR}"
+          -DCMAKE_GENERATOR_PLATFORM="${cmr_CMAKE_GENERATOR_PLATFORM}"
+          -DCMAKE_GENERATOR_TOOLSET="${cmr_CMAKE_GENERATOR_TOOLSET}"
           -DCMAKE_CONFIGURATION_TYPES=${cmr_CMAKE_BUILD_TYPE}
         -DATTACH_WX_CONSOLE=${cmr_ATTACH_WX_CONSOLE}
 
