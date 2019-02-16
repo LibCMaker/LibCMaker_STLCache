@@ -16,7 +16,6 @@ env:
     - cmr_SAMPLE_SRC_DIR=${cmr_REPO_DIR}/samples/TestCompileWith${cmr_LIB_NAME}
     - cmr_SAMPLE_DIR=${cmr_WORK_DIR}/TestCompileWith${cmr_LIB_NAME}
     - cmr_SAMPLE_LIB_DIR=${cmr_SAMPLE_DIR}/libs
-    - cmr_HOST_TOOLS_PROJECT_DIR=${cmr_SAMPLE_DIR}/host_tools
 
     - cmr_BUILD_DIR=${cmr_SAMPLE_DIR}/build
     - cmr_INSTALL_DIR=${cmr_BUILD_DIR}/install
@@ -103,8 +102,6 @@ build_windows: &build_windows
 
     - cmr_CMAKE_BUILD_TYPE=Release
 
-    - cmr_ATTACH_WX_CONSOLE=ON
-
     - PATH=${cmr_INSTALL_DIR}/bin:${PATH}
 
   before_install:
@@ -141,7 +138,6 @@ build_windows: &build_windows
           -DCMAKE_GENERATOR_PLATFORM="${cmr_CMAKE_GENERATOR_PLATFORM}"
           -DCMAKE_GENERATOR_TOOLSET="${cmr_CMAKE_GENERATOR_TOOLSET}"
           -DCMAKE_CONFIGURATION_TYPES=${cmr_CMAKE_BUILD_TYPE}
-        -DATTACH_WX_CONSOLE=${cmr_ATTACH_WX_CONSOLE}
 
     - ${cmr_CMAKE_CMD} --build . --config ${cmr_CMAKE_BUILD_TYPE}
 
@@ -177,34 +173,6 @@ build_windows_msvc_winxp: &build_windows_msvc_winxp
     - *build_windows_msvc_env
     - cmr_CMAKE_GENERATOR_PLATFORM="Win32"
     - cmr_CMAKE_GENERATOR_TOOLSET="v141_xp,host=x64"
-
-
-build_windows_msvc_arm: &build_windows_msvc_arm  # TODO:
-  <<: *build_windows_msvc
-  env: &build_windows_msvc_arm_env
-    - *build_windows_msvc_env
-    - cmr_CMAKE_GENERATOR_PLATFORM="ARM"  # TODO: or "ARM64"
-    - cmr_CMAKE_GENERATOR_TOOLSET="v141,host=x64"
-
-
-build_windows_ninja: &build_windows_ninja  # TODO:
-  <<: *build_windows
-  env: &build_windows_ninja_env
-    - *build_windows_env
-    - cmr_CMAKE_GENERATOR="Ninja"
-    - cmr_CMAKE_MAKE_PROGRAM=C:/path/to/ninja/ninja.exe
-
-
-build_windows_mingw: &build_windows_mingw  # TODO:
-  <<: *build_windows
-
-
-build_windows_mingw_w64: &build_windows_mingw_w64  # TODO:
-  <<: *build_windows_mingw
-
-
-build_windows_mingw_w32: &build_windows_mingw_w32  # TODO:
-  <<: *build_windows_mingw
 
 
 # === Android ===
