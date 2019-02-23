@@ -115,8 +115,6 @@ environment:
       cmr_GEN_PLATFORM: " "
       cmr_GEN_TOOLSET:  " "
       cmr_CONFIG_TYPES: " "
-#      cmr_STD_LIBS: -DCMAKE_C_STANDARD_LIBRARIES="-lmsvcr110 -shared" -DCMAKE_CXX_STANDARD_LIBRARIES="-lmsvcr110 -shared"
-#      cmr_STD_LIBS: -DCMAKE_C_STANDARD_LIBRARIES="-shared" -DCMAKE_CXX_STANDARD_LIBRARIES="-shared"
       cmr_STD_LIBS: " "
       cmr_BUILD_SHARED_LIBS: ON
       cmr_CMAKE_VERSION: 3.4
@@ -177,7 +175,6 @@ clone_folder: c:\projects\LibCMaker_${cmr_LIB_NAME}
 before_build:
   - ver
   - ps: $env:PATH = $env:PATH -replace "C:\\Program Files\\Git\\usr\\bin",""
-#  - set
   - xcopy %cmr_SAMPLE_SRC_DIR% %cmr_SAMPLE_DIR% /e /i /h /q
   - xcopy %cmr_REPO_DIR% %cmr_SAMPLE_LIB_DIR%\LibCMaker_%cmr_LIB_NAME% /e /i /h /q
 
