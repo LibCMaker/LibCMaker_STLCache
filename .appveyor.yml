@@ -8,7 +8,7 @@ image:
 environment:
   global:
     # NOTE: LibCMaker lib name.
-    # NOTE: See below the lib deps in 'before_build' for every target OS.
+    # NOTE: See below the lib deps in 'before_build' and lib CMake keys in 'build_script'.
     cmr_LIB_NAME: STLCache
     cmr_BUILD_TESTING: ON
 
@@ -193,6 +193,7 @@ before_build:
 build_script:
   - cd %cmr_BUILD_DIR%
 
+  # NOTE: LibCMaker lib CMake keys.
   - "%cmr_CMAKE_CMD% %cmr_SAMPLE_DIR%
       -Dcmr_BUILD_MULTIPROC_CNT=%cmr_JOBS_CNT%
       -Dcmr_PRINT_DEBUG=ON
