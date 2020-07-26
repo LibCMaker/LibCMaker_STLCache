@@ -29,9 +29,9 @@
 # Lib's name, version, paths
 #-----------------------------------------------------------------------
 
-set(STLCACHE_lib_NAME      "STLCache")
-set(STLCACHE_lib_VERSION   "0.2.20180405")
-set(STLCACHE_lib_DIR       "${CMAKE_CURRENT_LIST_DIR}")
+set(STLCACHE_lib_NAME "STLCache")
+set(STLCACHE_lib_VERSION "0.2.20180405" CACHE STRING "STLCACHE_lib_VERSION")
+set(STLCACHE_lib_DIR "${CMAKE_CURRENT_LIST_DIR}" CACHE PATH "STLCACHE_lib_DIR")
 
 # To use our Find<LibName>.cmake.
 list(APPEND CMAKE_MODULE_PATH "${STLCACHE_lib_DIR}/cmake/modules")
@@ -41,7 +41,7 @@ list(APPEND CMAKE_MODULE_PATH "${STLCACHE_lib_DIR}/cmake/modules")
 # LibCMaker_<LibName> specific vars and options
 #-----------------------------------------------------------------------
 
-set(COPY_STLCACHE_CMAKE_BUILD_SCRIPTS ON)
+option(COPY_STLCACHE_CMAKE_BUILD_SCRIPTS "COPY_STLCACHE_CMAKE_BUILD_SCRIPTS" ON)
 
 
 #-----------------------------------------------------------------------
