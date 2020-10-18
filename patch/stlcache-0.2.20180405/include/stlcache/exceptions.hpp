@@ -8,6 +8,8 @@
 #ifndef STLCACHE_EXCEPTIONS_HPP_INCLUDED
 #define STLCACHE_EXCEPTIONS_HPP_INCLUDED
 
+#include <stdexcept>
+
 namespace stlcache{
     /*!
      * \brief Base class for STL::Cache exceptions
